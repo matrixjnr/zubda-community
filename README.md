@@ -26,6 +26,6 @@ Use **Q&A** for implementation help, **Ideas** for proposals, and **Show and tel
 
 ## Security and participation
 
-Report vulnerabilities privately to **security@zubda.co**; do not publish exploit details or real credentials. See [SECURITY.md](SECURITY.md), [CONTRIBUTING.md](CONTRIBUTING.md) and [CODE_OF_CONDUCT.md](CODE_OF_CONDUCT.md).
+Report vulnerabilities privately to **platform@zubda.co** with a subject starting **`SECURITY-`**; do not publish exploit details or real credentials. See [SECURITY.md](SECURITY.md), [CONTRIBUTING.md](CONTRIBUTING.md) and [CODE_OF_CONDUCT.md](CODE_OF_CONDUCT.md).
 
 Documentation and examples in this repository use the MIT license. This does not license the Zubda application, trademarks or third-party integrations.

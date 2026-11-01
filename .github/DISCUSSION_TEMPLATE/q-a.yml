@@ -2,7 +2,7 @@ title: "[API question]: "
 body:
   - type: markdown
     attributes:
-      value: "Use synthetic data. Never paste API keys, cookies, passwords, customer data or payment details. Report vulnerabilities privately to security@zubda.co."
+      value: "Use synthetic data. Never paste API keys, cookies, passwords, customer data or payment details. Report vulnerabilities privately to platform@zubda.co with a subject starting SECURITY-."
   - type: input
     id: endpoint
     attributes:
