@@ -7,6 +7,7 @@ Build connections to Zubda, ask integration questions, share examples and sugges
 - [Share your integration](https://github.com/matrixjnr/zubda-community/discussions/categories/show-and-tell)
 - [Announcements](https://github.com/matrixjnr/zubda-community/discussions/categories/announcements)
 - [Storefront API v1 guide](docs/storefront-api-v1.md)
+- [OpenAPI specification](openapi/storefront-v1.json)
 - [Server-side Python example](examples/storefront.py)
 - [Zubda portal](https://portal.zubda.co)
 

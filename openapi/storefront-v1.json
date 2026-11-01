@@ -1,0 +1,557 @@
+{
+  "openapi": "3.0.3",
+  "info": {
+    "title": "Zubda Storefront API",
+    "version": "1.0.0",
+    "description": "Pro or active trial. Read catalog and availability, submit unpaid DRAFT orders, and read this integration application’s order summaries. No shopper authentication, payment collection, stock reservation, payroll or outbound order webhooks. Keep keys on your server.",
+    "contact": {
+      "url": "https://github.com/matrixjnr/zubda-community/discussions"
+    },
+    "license": {
+      "name": "MIT (specification and examples only)",
+      "url": "https://github.com/matrixjnr/zubda-community/blob/main/LICENSE"
+    }
+  },
+  "servers": [
+    {
+      "url": "https://api.zubda.co/api/storefront/v1"
+    }
+  ],
+  "paths": {
+    "/locations": {
+      "get": {
+        "summary": "Read active locations",
+        "description": "Requires the catalogRead key scope. Server-to-server only. Do not send Origin, Cookie or Authorization headers.",
+        "security": [
+          {
+            "IntegrationKey": []
+          }
+        ],
+        "x-key-scope": "catalogRead",
+        "operationId": "listLocations",
+        "responses": {
+          "200": {
+            "description": "Active locations for this key’s business.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Location"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Request refused. See the API guide for recovery."
+          },
+          "401": {
+            "description": "Request refused. See the API guide for recovery."
+          },
+          "402": {
+            "description": "Request refused. See the API guide for recovery."
+          },
+          "403": {
+            "description": "Request refused. See the API guide for recovery."
+          },
+          "404": {
+            "description": "Request refused. See the API guide for recovery."
+          },
+          "409": {
+            "description": "Request refused. See the API guide for recovery."
+          },
+          "429": {
+            "description": "Request refused. See the API guide for recovery."
+          },
+          "500": {
+            "description": "Request refused. See the API guide for recovery."
+          }
+        }
+      }
+    },
+    "/products": {
+      "get": {
+        "summary": "Read active, sellable products and availability",
+        "description": "Requires the catalogRead key scope. Server-to-server only. Do not send Origin, Cookie or Authorization headers.",
+        "security": [
+          {
+            "IntegrationKey": []
+          }
+        ],
+        "x-key-scope": "catalogRead",
+        "operationId": "listProducts",
+        "parameters": [
+          {
+            "name": "locationId",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "minimum": 0,
+              "default": 0
+            }
+          },
+          {
+            "name": "size",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 100,
+              "default": 25
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Catalog page with stable name/ID ordering; no cost prices or supplier data.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CatalogPage"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Request refused. See the API guide for recovery."
+          },
+          "401": {
+            "description": "Request refused. See the API guide for recovery."
+          },
+          "402": {
+            "description": "Request refused. See the API guide for recovery."
+          },
+          "403": {
+            "description": "Request refused. See the API guide for recovery."
+          },
+          "404": {
+            "description": "Request refused. See the API guide for recovery."
+          },
+          "409": {
+            "description": "Request refused. See the API guide for recovery."
+          },
+          "429": {
+            "description": "Request refused. See the API guide for recovery."
+          },
+          "500": {
+            "description": "Request refused. See the API guide for recovery."
+          }
+        }
+      }
+    },
+    "/orders": {
+      "post": {
+        "summary": "Submit an unpaid draft order",
+        "description": "Requires the ordersWrite key scope. Server-to-server only. Do not send Origin, Cookie or Authorization headers.",
+        "security": [
+          {
+            "IntegrationKey": []
+          }
+        ],
+        "x-key-scope": "ordersWrite",
+        "operationId": "createDraftOrder",
+        "parameters": [
+          {
+            "name": "Idempotency-Key",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "pattern": "^[A-Za-z0-9._:-]{1,100}$"
+            },
+            "description": "Stable checkout reference. Retry the identical body and key after a timeout; a changed body with this key returns 409."
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/OrderRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Unpaid draft created, or original order returned for an identical retry. No funds collected, stock reserved/deducted or revenue recognized.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OrderSummary"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Request refused. See the API guide for recovery."
+          },
+          "401": {
+            "description": "Request refused. See the API guide for recovery."
+          },
+          "402": {
+            "description": "Request refused. See the API guide for recovery."
+          },
+          "403": {
+            "description": "Request refused. See the API guide for recovery."
+          },
+          "404": {
+            "description": "Request refused. See the API guide for recovery."
+          },
+          "409": {
+            "description": "Request refused. See the API guide for recovery."
+          },
+          "429": {
+            "description": "Request refused. See the API guide for recovery."
+          },
+          "500": {
+            "description": "Request refused. See the API guide for recovery."
+          }
+        }
+      }
+    },
+    "/orders/{id}": {
+      "get": {
+        "summary": "Read one order created by this integration application",
+        "description": "Requires the ordersWrite key scope. Server-to-server only. Do not send Origin, Cookie or Authorization headers.",
+        "security": [
+          {
+            "IntegrationKey": []
+          }
+        ],
+        "x-key-scope": "ordersWrite",
+        "operationId": "getOrder",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Current order summary. Another tenant or separate integration cannot read it.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OrderSummary"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Request refused. See the API guide for recovery."
+          },
+          "401": {
+            "description": "Request refused. See the API guide for recovery."
+          },
+          "402": {
+            "description": "Request refused. See the API guide for recovery."
+          },
+          "403": {
+            "description": "Request refused. See the API guide for recovery."
+          },
+          "404": {
+            "description": "Request refused. See the API guide for recovery."
+          },
+          "409": {
+            "description": "Request refused. See the API guide for recovery."
+          },
+          "429": {
+            "description": "Request refused. See the API guide for recovery."
+          },
+          "500": {
+            "description": "Request refused. See the API guide for recovery."
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "securitySchemes": {
+      "IntegrationKey": {
+        "type": "apiKey",
+        "in": "header",
+        "name": "X-API-Key",
+        "description": "Scoped, expiring integration key from Portal Settings. Never ship in browser/mobile code."
+      }
+    },
+    "schemas": {
+      "Location": {
+        "type": "object",
+        "required": [
+          "id",
+          "name"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "name": {
+            "type": "string"
+          }
+        }
+      },
+      "CatalogItem": {
+        "type": "object",
+        "required": [
+          "id",
+          "name",
+          "unitPrice",
+          "currency",
+          "taxInclusive",
+          "trackInventory"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "sku": {
+            "type": "string",
+            "nullable": true
+          },
+          "name": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string",
+            "nullable": true
+          },
+          "imageUrl": {
+            "type": "string",
+            "nullable": true
+          },
+          "unitPrice": {
+            "type": "number",
+            "description": "Decimal amount calculated by Zubda. Use decimal arithmetic; do not invent prices or paid status."
+          },
+          "currency": {
+            "type": "string",
+            "minLength": 3,
+            "maxLength": 3
+          },
+          "vatRate": {
+            "type": "number"
+          },
+          "taxInclusive": {
+            "type": "boolean"
+          },
+          "trackInventory": {
+            "type": "boolean"
+          },
+          "availableQuantity": {
+            "type": "number",
+            "nullable": true,
+            "description": "Snapshot only; null for untracked items. Does not reserve stock."
+          }
+        }
+      },
+      "CatalogPage": {
+        "type": "object",
+        "required": [
+          "content"
+        ],
+        "properties": {
+          "content": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/CatalogItem"
+            }
+          },
+          "totalElements": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "totalPages": {
+            "type": "integer"
+          },
+          "number": {
+            "type": "integer"
+          },
+          "size": {
+            "type": "integer"
+          },
+          "last": {
+            "type": "boolean"
+          }
+        }
+      },
+      "Buyer": {
+        "type": "object",
+        "required": [
+          "name"
+        ],
+        "properties": {
+          "name": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 200
+          },
+          "email": {
+            "type": "string",
+            "format": "email",
+            "maxLength": 200,
+            "nullable": true
+          },
+          "phone": {
+            "type": "string",
+            "maxLength": 40,
+            "nullable": true
+          },
+          "address": {
+            "type": "string",
+            "maxLength": 500,
+            "nullable": true
+          }
+        }
+      },
+      "OrderLine": {
+        "type": "object",
+        "required": [
+          "productId",
+          "quantity"
+        ],
+        "properties": {
+          "productId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "quantity": {
+            "type": "number",
+            "minimum": 0.001,
+            "maximum": 999999999.999,
+            "multipleOf": 0.001
+          }
+        }
+      },
+      "OrderRequest": {
+        "type": "object",
+        "required": [
+          "locationId",
+          "lines"
+        ],
+        "description": "Provide customer details or an existing customerId, never both. Your backend must authorize the shopper’s ownership of any reused customerId within this store. All lines use one currency; configured FX may be required.",
+        "properties": {
+          "locationId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "customerId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "customer": {
+            "$ref": "#/components/schemas/Buyer"
+          },
+          "lines": {
+            "type": "array",
+            "minItems": 1,
+            "maxItems": 100,
+            "items": {
+              "$ref": "#/components/schemas/OrderLine"
+            }
+          },
+          "notes": {
+            "type": "string",
+            "maxLength": 1000,
+            "nullable": true
+          }
+        },
+        "oneOf": [
+          {
+            "required": [
+              "customer"
+            ],
+            "not": {
+              "required": [
+                "customerId"
+              ],
+              "properties": {
+                "customerId": {
+                  "type": "string",
+                  "format": "uuid"
+                }
+              }
+            }
+          },
+          {
+            "required": [
+              "customerId"
+            ],
+            "not": {
+              "required": [
+                "customer"
+              ],
+              "properties": {
+                "customer": {
+                  "$ref": "#/components/schemas/Buyer"
+                }
+              }
+            }
+          }
+        ]
+      },
+      "OrderSummary": {
+        "type": "object",
+        "required": [
+          "id",
+          "orderNumber",
+          "status",
+          "paymentStatus",
+          "total",
+          "amountPaid",
+          "currency",
+          "customerId"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "orderNumber": {
+            "type": "string"
+          },
+          "status": {
+            "type": "string",
+            "description": "New submissions are DRAFT. Later reads reflect ERP status."
+          },
+          "paymentStatus": {
+            "type": "string",
+            "description": "New submissions are UNPAID. Never treat a redirect as payment confirmation."
+          },
+          "total": {
+            "type": "number",
+            "description": "Decimal amount calculated by Zubda. Use decimal arithmetic; do not invent prices or paid status."
+          },
+          "amountPaid": {
+            "type": "number",
+            "description": "Decimal amount calculated by Zubda. Use decimal arithmetic; do not invent prices or paid status."
+          },
+          "currency": {
+            "type": "string"
+          },
+          "customerId": {
+            "type": "string",
+            "format": "uuid"
+          }
+        }
+      }
+    }
+  }
+}

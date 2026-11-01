@@ -6,6 +6,14 @@ Owners and admins manage keys in **Settings → Storefront API**. Keys have `cat
 
 Every storefront request sends `X-API-Key: <key>`. Cookie, Authorization and Origin headers are refused on this route. Send requests through a backend proxy that strips browser credentials. Responses use `Cache-Control: no-store`.
 
+## Tenant and shopper boundaries
+
+A key belongs to one Zubda business. Its tenant is derived from the authenticated key, not a client-supplied tenant header or request field. Management queries are restricted to the signed-in owner’s/admin’s business. Key hashes and full secrets are excluded from metadata responses.
+
+The API key authenticates the store’s backend, not an individual shopper. Customer login belongs to the tenant’s storefront. The same person or email can be a customer of several businesses; each store keeps independent customer records, order access and commercial terms. Never merge or expose records across tenants solely because an email matches. Reusing customerId requires shopper ownership checks in your own server.
+
+Revocation or expiry rejects subsequent requests; expiry is checked on each request without a cleanup job. Revocation does not cancel work that was already authorized and is in flight. Revoking an old credential does not revoke its valid replacement; revoke each active credential that should stop working.
+
 ## Catalog
 
 - `GET /api/storefront/v1/locations` — active location IDs and names.
