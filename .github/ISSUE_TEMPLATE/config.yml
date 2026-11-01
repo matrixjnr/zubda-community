@@ -1,0 +1,11 @@
+blank_issues_enabled: false
+contact_links:
+  - name: API questions and troubleshooting
+    url: https://github.com/matrixjnr/zubda-community/discussions/categories/q-a
+    about: Ask the community with a redacted example.
+  - name: Feature requests
+    url: https://github.com/matrixjnr/zubda-community/discussions/categories/ideas
+    about: Explain the business problem and proposed behaviour.
+  - name: Private account help
+    url: https://www.zubda.co/contact/
+    about: Do not share account or customer information in public.

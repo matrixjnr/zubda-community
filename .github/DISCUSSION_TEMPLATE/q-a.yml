@@ -1,0 +1,23 @@
+title: "[API question]: "
+body:
+  - type: markdown
+    attributes:
+      value: "Use synthetic data. Never paste API keys, cookies, passwords, customer data or payment details. Report vulnerabilities privately to security@zubda.co."
+  - type: input
+    id: endpoint
+    attributes:
+      label: Endpoint and HTTP status
+      placeholder: GET /api/storefront/v1/products → 403
+    validations:
+      required: true
+  - type: textarea
+    id: question
+    attributes:
+      label: What are you trying to do?
+      description: Include expected behaviour, actual behaviour and a redacted minimal example.
+    validations:
+      required: true
+  - type: textarea
+    id: tried
+    attributes:
+      label: What have you tried?

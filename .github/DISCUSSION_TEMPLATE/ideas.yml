@@ -1,0 +1,15 @@
+title: "[Idea]: "
+body:
+  - type: textarea
+    id: problem
+    attributes:
+      label: What business problem should this solve?
+    validations:
+      required: true
+  - type: textarea
+    id: proposal
+    attributes:
+      label: Proposed behaviour and current workaround
+      description: Use synthetic examples and include which API or workflow is affected.
+    validations:
+      required: true
