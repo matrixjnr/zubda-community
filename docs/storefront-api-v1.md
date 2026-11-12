@@ -47,7 +47,7 @@ Prices and VAT come from the server catalog; shoppers cannot supply discounts, p
 
 The response includes `id`, `orderNumber`, `DRAFT`, `UNPAID`, total, amount paid, currency and customer ID. Submission does not collect money, reserve/deduct stock, allocate serials or recognize revenue. Review and fulfill in Zubda; record and verify actual payments through the normal sales workflow. Do not mark a storefront payment successful from a redirect alone.
 
-The order, customer, retry record and device sync facts commit together. Repeating the same key and request returns the same order ID. Reusing a key with different details returns **409**. Keep the key stable after timeouts; do not generate a new key for a network retry.
+The order, customer, retry record and device sync facts commit together. Repeating the same key and request returns the same order ID. Reusing a key with different details returns **409**. Keep the key stable after timeouts; do not generate a new key for a network retry. Idempotency records are retained for 90 days by default; after that window an old key may be accepted again, so retain retry state for at least as long as your own retry policy.
 
 `GET /api/storefront/v1/orders/<id>` returns the current summary only for this integration application's orders. Poll it for status; v1 does not provide outbound storefront webhooks.
 
@@ -66,7 +66,7 @@ Management endpoints use an owner's/admin's normal authenticated session (and CS
 
 The organization has the same subscription grace as normal sessions: seven days of full access after expiry, then read-only through day 14. Keys themselves stop at their own expiry immediately.
 
-401 means missing, expired or revoked credentials (or an inactive/locked organization); 403 means missing scope; 402 means the plan no longer includes API access; 400 means invalid input; 404 means the integration cannot see that order; 409 means conflicting retry details. Limit requests and retry transient failures with backoff. The backend applies 120 requests per minute per IP and key per instance, returns 429 with `Retry-After: 60`; configure shared rate limits at the reverse proxy for multiple instances.
+401 means missing, expired or revoked credentials (or an inactive/locked organization); 403 means missing scope; 402 means the plan no longer includes API access; 400 means invalid input; 404 means the integration cannot see that order; 409 means conflicting retry details. Limit requests and retry transient failures with backoff. The backend applies 120 requests per minute per IP and key. Counters live in the configured cache: shared across instances with Redis, per instance in memory mode. It returns 429 with `Retry-After: 60`.
 
 Do not interpret a timeout as an order failure: retry the original body and idempotency key. Recheck catalog prices and order totals on your storefront. The shopper-facing service must enforce its own authentication, checkout limits and customer ownership.
 
