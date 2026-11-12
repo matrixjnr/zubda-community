@@ -49,7 +49,29 @@ The response includes `id`, `orderNumber`, `DRAFT`, `UNPAID`, total, amount paid
 
 The order, customer, retry record and device sync facts commit together. Repeating the same key and request returns the same order ID. Reusing a key with different details returns **409**. Keep the key stable after timeouts; do not generate a new key for a network retry. Idempotency records are retained for 90 days by default; after that window an old key may be accepted again, so retain retry state for at least as long as your own retry policy.
 
-`GET /api/storefront/v1/orders/<id>` returns the current summary only for this integration application's orders. Poll it for status; v1 does not provide outbound storefront webhooks.
+`GET /api/storefront/v1/orders/<id>` returns the current summary only for this integration application's orders. Polling remains available as a reconciliation path.
+
+## Webhooks
+
+Configure a webhook on the integration key:
+
+```http
+PUT /api/integrations/keys/<id>/webhook
+Content-Type: application/json
+
+{ "url": "https://store.example.com/zubda/orders" }
+```
+
+The response contains the signing secret **once**. Store it server-side. Only HTTPS URLs are accepted, and loopback/private/link-local targets are refused. Removing the webhook with `DELETE /api/integrations/keys/<id>/webhook` stops future deliveries without revoking the key.
+
+Order status changes are POSTed as JSON with:
+
+- `X-Zubda-Event: order.status_changed`
+- `X-Zubda-Delivery: <delivery uuid>` (use it to deduplicate)
+- `X-Zubda-Timestamp: <unix seconds>`
+- `X-Zubda-Signature: sha256=<hmac>`
+
+The signature is HMAC-SHA256 over `<timestamp>.<raw body>` using the signing secret. Verify the timestamp is fresh and compare the signature in constant time before acting. Deliveries are durable and retried with backoff up to six attempts; a receiver may see duplicates after a timeout, so processing must be idempotent. Payload contains `event`, `orderId`, `orderNumber`, `status`, `paymentStatus`, `total`, `amountPaid`, `currency`, `customerId` and `occurredAt`.
 
 ## Replace or revoke credentials
 

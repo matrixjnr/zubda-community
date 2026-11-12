@@ -13,7 +13,7 @@ Build connections to Zubda, ask integration questions, share examples and sugges
 
 ## What is available today?
 
-The public **Storefront API v1** supports reading active locations, catalog and availability, submitting unpaid draft orders, and checking orders created by the same integration. It requires Pro or above, or an active trial. It does not expose the ERP's internal endpoints or provide payment collection, payroll, accounting reports or outbound order webhooks.
+The public **Storefront API v1** supports reading active locations, catalog and availability, submitting unpaid draft orders, and checking orders created by the same integration. It requires Pro or above, or an active trial. It does not expose the ERP's internal endpoints or provide payment collection, payroll or accounting reports. Signed order-status webhooks are available per integration key.
 
 Create a scoped, expiring key in **Portal → Settings → Storefront API**. Keep it in a server environment variable; never include it in browser code, mobile apps, screenshots or a public discussion. Prices and taxes are calculated by Zubda, and submission does not reserve stock or recognize revenue.
 
